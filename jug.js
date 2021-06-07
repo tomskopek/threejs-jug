@@ -81,32 +81,6 @@ function init() {
     exposure: 1,
   };
 
-  {
-    const height = 10;
-    const radius = 3;
-    const geometry = new THREE.CylinderGeometry(
-      radius,
-      radius,
-      height,
-      32,
-      1,
-      true
-    );
-    const material = new THREE.MeshPhysicalMaterial({
-      color: params.color,
-      transmission: params.transmission,
-      opacity: params.opacity,
-      metalness: params.metalness,
-      roughness: params.roughness,
-      envMapIntensity: params.envMapIntensity,
-      transparent: true,
-      side: THREE.DoubleSide,
-    });
-    const cylinder = new THREE.Mesh(geometry, material);
-    cylinder.position.y = height / 2;
-    // scene.add(cylinder);
-  }
-
   let cork, glass, water;
 
   {
