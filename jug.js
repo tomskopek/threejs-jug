@@ -1,10 +1,29 @@
+
 import * as THREE from "https://cdn.skypack.dev/three@0.128.0/build/three.module.js";
 import { OrbitControls } from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/loaders/GLTFLoader.js";
 import {RGBELoader} from 'https://cdn.skypack.dev/three@0.128.0/examples/jsm/loaders/RGBELoader.js';
 import { GUI } from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/libs/dat.gui.module.js";
 import {Water} from 'https://cdn.skypack.dev/three@0.128.0/examples/jsm/objects/Water.js';
+import {RectAreaLightUniformsLib} from 'https://cdn.skypack.dev/three@0.128.0/examples/jsm/lights/RectAreaLightUniformsLib.js';
+import { EffectComposer } from 'https://cdn.skypack.dev/three@0.128.0/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'https://cdn.skypack.dev/three@0.128.0/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'https://cdn.skypack.dev/three@0.128.0/examples/jsm/postprocessing/UnrealBloomPass.js';
 
+
+
+/*
+import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module.js";
+import { OrbitControls } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/OrbitControls.js";
+import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
+import {RGBELoader} from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/RGBELoader.js';
+import { GUI } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/libs/dat.gui.module.js";
+import {Water} from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/objects/Water.js';
+import {RectAreaLightUniformsLib} from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/lights/RectAreaLightUniformsLib.js';
+import { EffectComposer } from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/postprocessing/UnrealBloomPass.js';
+*/
 
 //---------------------------------------------------------------------------------   INIT
 var watermat,mixer;
@@ -68,12 +87,19 @@ function init() {
 
   gui.add(controls, "autoRotate");
 
-//---------------------------------------------------------------------------------   BACKGROUND
+//---------------------------------------------------------------------------------   SCENE - BACKGROUND
 
 
   const scene = new THREE.Scene();
 
-  scene.background = new THREE.Color(0x6688aa);
+	var fog= new THREE.Fog(0xaaaaaa,5,100);
+//	scene.fog=fog;
+
+    const fogFolder = gui.addFolder("Fog");
+    fogFolder.add(fog, "near", 0, 100, 0.1).listen();
+    fogFolder.add(fog, "far", 0, 100, 0.1).listen();
+
+  scene.background = new THREE.Color(0xaaaaaa);
 //  scene.background = new THREE.Color(0x333388);
 
 //---------------------------------------------------------------------------------    RADIANCE MAP
@@ -136,32 +162,6 @@ let cork, glass, water;
             if (o.name === "Jug_v1003") {
               cork = o;
             }
-            if (o.name === "Jug_v1004") {
-              let showWater = {
-                showWater: true,
-                waterOpacity: 0.8,
-              };
-
-//---------------------------------------------------------------------------------   WATER
-
-              water = o;
-              water.material.color = new THREE.Color(0x000055);
-              water.material.opacity = 0.8;
-              const waterFolder = gui.addFolder("Water");
-              waterFolder.add(showWater, "showWater").onChange((v) => {
-                if (v) {
-                  water.material.opacity = showWater.waterOpacity;
-                } else {
-                  showWater.waterOpacity = water.material.opacity;
-                  water.material.opacity = 0;
-                }
-              });
-              waterFolder.add(water.material, "transparent");
-              waterFolder.add(water.material, "opacity", 0, 1);
-//              water.material.ior=1;
-            }
-
-
             if (o.name === "Jug_v1005") {
 
 
@@ -173,7 +173,6 @@ let cork, glass, water;
 			root.getObjectByName('water').material.depthWrite=false;
 			
               const glassFolder = gui.addFolder("Glass");
-              glassFolder.open();
               glassFolder.add(glass.material, "transmission", 0, 1, 0.01);
               glassFolder.add(glass.material, "opacity", 0, 1, 0.1);
               glassFolder.add(glass.material, "metalness", 0, 1, 0.1);
@@ -207,7 +206,7 @@ const waterGeometry = new THREE.CircleGeometry( 0.057, 64 );
 				);
 
 				watermat.rotation.x = - Math.PI / 2;
-				watermat.position.set(root.getObjectByName('watersurface').position.x,root.getObjectByName('watersurface').position.y,root.getObjectByName('watersurface').position.z);
+				watermat.position.set(root.getObjectByName('water').position.x,root.getObjectByName('water').position.y,root.getObjectByName('water').position.z);
 				watermat.name='watermat';
 				root.add(watermat); 
         
@@ -236,14 +235,54 @@ const waterGeometry = new THREE.CircleGeometry( 0.057, 64 );
     let hemiFolder = gui.addFolder("HemiLight");
     hemiFolder.add(glight, "intensity", 0, 10, 0.1).listen();
 
+
+//----------------------------------------------------------------------------------------- LIGHTS
+
+	let L1= new THREE.RectAreaLight(0xffffff,10,10,100);
+	L1.name='L1';
+	L1.power=800;
+	L1.position.y=0;
+	L1.position.x=-20;
+	L1.position.z=10;
+ 	L1.rotation.y=-Math.PI/2.5;
+//	scene.add(L1);
+
+	let L2= new THREE.RectAreaLight(0xffcc88,10,10,100);
+	L2.name='L2';
+	L2.power=800;
+	L2.position.y=0;
+	L2.position.x=20;
+	L2.position.z=-10;
+ 	L2.rotation.y=-Math.PI/2.5;
+//	scene.add(L2);
+
+	RectAreaLightUniformsLib.init()
+    const ArealightFolder = gui.addFolder("AreaLight");
+    ArealightFolder.add(L1, "intensity", 0, 100, 0.1).listen();
+    ArealightFolder.add(L2, "intensity", 0, 100, 0.1).listen();
+
+
+
 //----------------------------------------------------------------------------------------- EFFECT COMPOSER
 
-/*	const composer= new EffectComposer(renderer);
+
+
+	const composer= new EffectComposer(renderer);
 	composer.addPass(new RenderPass(scene,camera));
-	var gammaPass= new ShaderPass(GammaCorrectionShader);
-	let ssaaPass = new SSAARenderPass(scene,camera,0xff0000,0);
-	composer.addPass(ssaaPass);
-*/
+
+	
+	var bloomPass = new UnrealBloomPass(new THREE.Vector2(window.clientWidth,window.clientHeight) , 1, 1, 1); // Strength, radius, threshold
+	bloomPass.strength=0.45;
+	bloomPass.threshold=0.916;
+	bloomPass.radius=1.21;
+
+	composer.addPass(bloomPass);
+    const bloomFolder = gui.addFolder("Bloom");
+    bloomFolder.add(bloomPass, "strength", 0, 2, 0.01).listen();
+    bloomFolder.add(bloomPass, "threshold", 0.5, 1, 0.001).listen();
+    bloomFolder.add(bloomPass, "radius", 0, 1.5, 0.01).listen();
+
+
 //-----------------------------------------------------------------------------------------  ANIM LOOP
 
  
@@ -257,8 +296,8 @@ const waterGeometry = new THREE.CircleGeometry( 0.057, 64 );
       camera.updateProjectionMatrix();
     }
 
-//	composer.render();
-   renderer.render(scene, camera);
+	composer.render();
+//   renderer.render(scene, camera);
     controls.update();
     requestAnimationFrame(render);
 	if (mixer != null) {
