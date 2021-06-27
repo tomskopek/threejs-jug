@@ -99,7 +99,9 @@ function init() {
     fogFolder.add(fog, "near", 0, 100, 0.1).listen();
     fogFolder.add(fog, "far", 0, 100, 0.1).listen();
 
-  scene.background = new THREE.Color(0xaaaaaa);
+  // scene.background = new THREE.Color(0xaaaaaa);
+  scene.background = new THREE.Color(0x0C9CDB); // Primary Blue
+  // scene.background = new THREE.Color(0xffffff); // White
 //  scene.background = new THREE.Color(0x333388);
 
 //---------------------------------------------------------------------------------    RADIANCE MAP
@@ -107,8 +109,8 @@ function init() {
 	new RGBELoader()
 	    .setDataType(THREE.UnsignedByteType)
 	    .setPath('jug/9-5_Jug_resources/')
-	    .load('environment.hdr', function(texture){
 		
+      .load('snowy_field_1k.hdr', function(texture){
 		texture.encoding = THREE.RGBEEncoding;
 		let pmremGenerator = new THREE.PMREMGenerator(renderer);
 		let envMap = pmremGenerator.fromEquirectangular(texture).texture;
