@@ -24,6 +24,7 @@ import {RectAreaLightUniformsLib} from 'https://cdn.skypack.dev/three@0.129.0/ex
 import { EffectComposer } from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { SSAARenderPass } from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/postprocessing/SSAARenderPass.js';
 */
 
 //---------------------------------------------------------------------------------   INIT
@@ -48,7 +49,6 @@ function init() {
   }
 
 //---------------------------------------------------------------------------------   RENDERER
-stats.begin();
 
   const canvas = document.querySelector("#c");
   const gui = new GUI();
@@ -101,7 +101,7 @@ stats.begin();
 
   // scene.background = new THREE.Color(0xaaaaaa);
   scene.background = new THREE.Color(0x0C9CDB); // Primary Blue
-  // scene.background = new THREE.Color(0xffffff); // White
+//   scene.background = new THREE.Color(0xffffff); // White
 //  scene.background = new THREE.Color(0x333388);
 
 //---------------------------------------------------------------------------------    RADIANCE MAP
@@ -170,8 +170,7 @@ let cork, glass, water;
 //------------------------------------------------------------------------------	 GLASS
               glass = o;
 
-//			glass.material.ior=1.06;
-			root.getObjectByName('water').material.ior=2;
+			root.getObjectByName('water').material.reflectivity=1;
 			root.getObjectByName('water').material.depthWrite=false;
 			
               const glassFolder = gui.addFolder("Glass");
