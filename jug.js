@@ -9,6 +9,7 @@ import {RectAreaLightUniformsLib} from 'https://cdn.skypack.dev/three@0.128.0/ex
 import { EffectComposer } from 'https://cdn.skypack.dev/three@0.128.0/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'https://cdn.skypack.dev/three@0.128.0/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'https://cdn.skypack.dev/three@0.128.0/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { SSAARenderPass } from 'https://cdn.skypack.dev/three@0.128.0/examples/jsm/postprocessing/SSAARenderPass.js';
 
 
 
@@ -283,6 +284,13 @@ const waterGeometry = new THREE.CircleGeometry( 0.057, 64 );
     bloomFolder.add(bloomPass, "strength", 0, 2, 0.01).listen();
     bloomFolder.add(bloomPass, "threshold", 0.5, 1, 0.001).listen();
     bloomFolder.add(bloomPass, "radius", 0, 1.5, 0.01).listen();
+
+
+	var ssaaPass = new SSAARenderPass(scene,camera,0xff0000,0);
+	ssaaPass.sampleLevel=4
+	ssaaPass.unbiased=true
+	composer.addPass( ssaaPass );
+
 
 
 //-----------------------------------------------------------------------------------------  ANIM LOOP
