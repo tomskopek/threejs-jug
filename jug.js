@@ -29,7 +29,6 @@ import { UnrealBloomPass } from 'https://cdn.skypack.dev/three@0.129.0/examples/
 //---------------------------------------------------------------------------------   INIT
 var watermat,mixer;
 var clock = new THREE.Clock();
-
 init();
 
 
@@ -49,6 +48,7 @@ function init() {
   }
 
 //---------------------------------------------------------------------------------   RENDERER
+stats.begin();
 
   const canvas = document.querySelector("#c");
   const gui = new GUI();
@@ -56,10 +56,9 @@ function init() {
   const renderer = new THREE.WebGLRenderer({ canvas,antialias:true});
   resizeRendererToDisplaySize(renderer);
 	renderer.toneMapping = THREE.ACESFilmicToneMapping;
-	renderer.toneMappingExposure = 1;
+	renderer.toneMappingExposure = 1.2;
 	renderer.outputEncoding = THREE.sRGBEncoding;
 	renderer.outputEncoding = THREE.GammaEncoding;
-	renderer.gammaFactor=1.2;
 	renderer.physicallyCorrectLights=true;
   const EnvFolder = gui.addFolder("Environment");
   EnvFolder.add(renderer, "toneMappingExposure", 0, 5, 0.1).listen();
@@ -111,7 +110,7 @@ function init() {
 	    .setDataType(THREE.UnsignedByteType)
 	    .setPath('jug/9-5_Jug_resources/')
 		
-      .load('snowy_field_1k.hdr', function(texture){
+      .load('environment2.hdr', function(texture){
 		texture.encoding = THREE.RGBEEncoding;
 		let pmremGenerator = new THREE.PMREMGenerator(renderer);
 		let envMap = pmremGenerator.fromEquirectangular(texture).texture;
@@ -296,9 +295,9 @@ const waterGeometry = new THREE.CircleGeometry( 0.057, 64 );
 //-----------------------------------------------------------------------------------------  ANIM LOOP
 
  
-
   function render(time) {
-    time *= 0.001; // convert time to seconds
+
+   time *= 0.001; // convert time to seconds
 
     if (resizeRendererToDisplaySize(renderer)) {
       const canvas = renderer.domElement;
@@ -318,6 +317,6 @@ const waterGeometry = new THREE.CircleGeometry( 0.057, 64 );
 	};
 
   }
-
   requestAnimationFrame(render);
 }
+
