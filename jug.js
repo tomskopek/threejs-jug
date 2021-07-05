@@ -10,6 +10,7 @@ import { EffectComposer } from 'https://cdn.skypack.dev/three@0.128.0/examples/j
 import { RenderPass } from 'https://cdn.skypack.dev/three@0.128.0/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'https://cdn.skypack.dev/three@0.128.0/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { SSAARenderPass } from 'https://cdn.skypack.dev/three@0.128.0/examples/jsm/postprocessing/SSAARenderPass.js';
+import Stats from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/libs/stats.module.js";
 
 
 
@@ -30,9 +31,19 @@ import { SSAARenderPass } from 'https://cdn.skypack.dev/three@0.129.0/examples/j
 //---------------------------------------------------------------------------------   INIT
 var watermat,mixer;
 var clock = new THREE.Clock();
+var stats
 init();
 
+function createStats() {
+  var stats = new Stats();
+  stats.showPanel(0);// 0: frames rendered in the last second / 1: ms needed to render the last frame
 
+  stats.domElement.style.position = 'absolute';
+  stats.domElement.style.left = '0';
+  stats.domElement.style.top = '0';
+
+  return stats;
+}
 
 function init() {
 
@@ -52,6 +63,9 @@ function init() {
 
   const canvas = document.querySelector("#c");
   const gui = new GUI();
+
+  stats = createStats();
+  document.body.appendChild( stats.dom );
 
   const renderer = new THREE.WebGLRenderer({ canvas,antialias:true});
   resizeRendererToDisplaySize(renderer);
@@ -82,7 +96,7 @@ function init() {
 //---------------------------------------------------------------------------------   ORBIT CONTROLS
   const controls = new OrbitControls(camera, canvas);
   controls.target.set(0, 5, 0);
-  controls.autoRotate = false;
+  controls.autoRotate = true;
   controls.update();
 
   gui.add(controls, "autoRotate");
@@ -295,6 +309,7 @@ const waterGeometry = new THREE.CircleGeometry( 0.057, 64 );
 
  
   function render(time) {
+    stats.begin();
 
    time *= 0.001; // convert time to seconds
 
@@ -314,6 +329,8 @@ const waterGeometry = new THREE.CircleGeometry( 0.057, 64 );
 	if (mixer != null) {
 		mixer.update(clock.getDelta());
 	};
+
+    stats.end();
 
   }
   requestAnimationFrame(render);
