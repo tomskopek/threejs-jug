@@ -299,9 +299,11 @@ const waterGeometry = new THREE.CircleGeometry( 0.057, 64 );
 
 
 	var ssaaPass = new SSAARenderPass(scene,camera,0xff0000,0);
-	ssaaPass.sampleLevel=4
+	ssaaPass.sampleLevel=1
 	ssaaPass.unbiased=true
 	composer.addPass( ssaaPass );
+  const ssaaPassFolder = gui.addFolder("ssaaPass");
+  ssaaPassFolder.add(ssaaPass, "sampleLevel", 0, 4, 1).listen();
 
 
 
