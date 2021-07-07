@@ -201,7 +201,7 @@ let cork, glass, water;
             }
           }
         });
-const waterGeometry = new THREE.CircleGeometry( 0.057, 64 );
+/*const waterGeometry = new THREE.CircleGeometry( 0.057, 64 );
 				watermat = new Water(
 					waterGeometry,
 					{
@@ -224,7 +224,7 @@ const waterGeometry = new THREE.CircleGeometry( 0.057, 64 );
 				watermat.position.set(root.getObjectByName('water').position.x,root.getObjectByName('water').position.y,root.getObjectByName('water').position.z);
 				watermat.name='watermat';
 				root.add(watermat); 
-        
+  */      
         scene.add(root);
 			mixer = new THREE.AnimationMixer( gltf.scene );
 			var i=0;
@@ -325,10 +325,10 @@ const waterGeometry = new THREE.CircleGeometry( 0.057, 64 );
 //   renderer.render(scene, camera);
     controls.update();
     requestAnimationFrame(render);
-	if (mixer != null) {
+/*	if (mixer != null) {
 		watermat.material.uniforms[ 'time' ].value += 0.2 / 60.0;
 	};
-	if (mixer != null) {
+*/	if (mixer != null) {
 		mixer.update(clock.getDelta());
 	};
 
